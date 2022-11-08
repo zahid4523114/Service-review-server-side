@@ -22,6 +22,12 @@ async function run() {
     .db("photography")
     .collection("photography-reviews");
   try {
+    //add service
+    app.post("/photographs", async (req, res) => {
+      const service = req.body;
+      const result = await photographyCollection.insertOne(service);
+      res.send(result);
+    });
     //get all data
     app.get("/photographs", async (req, res) => {
       const query = {};
