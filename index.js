@@ -21,6 +21,7 @@ async function run() {
   const photographyCollection = client
     .db("photography")
     .collection("photography-reviews");
+  const reviewCollection = client.db("serviceReview").collection("reviews");
   try {
     //add service
     app.post("/photographs", async (req, res) => {
@@ -48,6 +49,13 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await photographyCollection.findOne(query);
       res.send(result);
+      //post review
+      app.post("/reviews", async (req, res) => {
+        const reviews = req.body;
+        const result = await reviewCollection.insertOne(reviews);
+        res.send(result);
+        console.log(reviews);
+      });
     });
   } finally {
   }
