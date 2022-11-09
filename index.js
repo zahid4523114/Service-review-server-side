@@ -18,11 +18,12 @@ const client = new MongoClient(uri, {
 });
 
 async function run() {
-  const photographyCollection = client
-    .db("photography")
-    .collection("photography-reviews");
-  const reviewCollection = client.db("serviceReview").collection("reviews");
   try {
+    const photographyCollection = client
+      .db("photography")
+      .collection("photography-reviews");
+
+    const reviewCollection = client.db("photography").collection("reviews");
     //add service
     app.post("/photographs", async (req, res) => {
       const service = req.body;
@@ -54,8 +55,35 @@ async function run() {
         const reviews = req.body;
         const result = await reviewCollection.insertOne(reviews);
         res.send(result);
-        console.log(reviews);
       });
+      //get review data
+      app.get("/reviews", async (req, res) => {
+        let query = {};
+        //get data by query
+        if (req.query.email) {
+          query = {
+            email: req.query.email,
+          };
+        }
+        const cursor = reviewCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+      });
+      //delete review
+      app.delete("/reviews/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await reviewCollection.deleteOne(query);
+        res.send(result);
+      });
+      //get review by id
+      // app.get("/reviews/:id", async (req, res) => {
+      //   const id = req.params.id;
+      //   const query = { id: id };
+      //   const cursor = reviewCollection.find(query);
+      //   const result = await cursor.toArray();
+      //   res.send(result);
+      // });
     });
   } finally {
   }
