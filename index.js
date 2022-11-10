@@ -4,6 +4,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 //middleware
 app.use(cors());
@@ -76,6 +77,40 @@ async function run() {
         const result = await reviewCollection.deleteOne(query);
         res.send(result);
       });
+      //get single item
+      app.get("/reviews/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await reviewCollection.findOne(query);
+        res.send(result);
+      });
+      //update review
+      app.put("/reviews/:id", async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: ObjectId(id) };
+        const option = { upsert: true };
+        const review = req.body;
+        const updateReview = {
+          $set: {
+            name: review.name,
+            price: review.price,
+            description: review.description,
+            image: review.image,
+          },
+        };
+        const result = await reviewCollection.updateOne(
+          filter,
+          updateReview,
+          option
+        );
+        res.send(result);
+      });
+      //jwt
+      // app.post("/jwt", (req, res) => {
+      //   const user = req.body;
+      //   const token = jwt.sign(user, process.env.ACCESS_TOKEN);
+      //   res.send({ token });
+      // });
       //get review by id
       // app.get("/reviews/:id", async (req, res) => {
       //   const id = req.params.id;
