@@ -70,6 +70,19 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
       });
+      //get single review
+      app.get("/reviews", async (req, res) => {
+        let query = {};
+        //get data by query
+        if (req.query.id) {
+          query = {
+            id: req.query.id,
+          };
+        }
+        const cursor = reviewCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+      });
       //delete review
       app.delete("/reviews/:id", async (req, res) => {
         const id = req.params.id;
@@ -105,19 +118,12 @@ async function run() {
         );
         res.send(result);
       });
+
       //jwt
       // app.post("/jwt", (req, res) => {
       //   const user = req.body;
       //   const token = jwt.sign(user, process.env.ACCESS_TOKEN);
       //   res.send({ token });
-      // });
-      //get review by id
-      // app.get("/reviews/:id", async (req, res) => {
-      //   const id = req.params.id;
-      //   const query = { id: id };
-      //   const cursor = reviewCollection.find(query);
-      //   const result = await cursor.toArray();
-      //   res.send(result);
       // });
     });
   } finally {
