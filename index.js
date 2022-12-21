@@ -83,6 +83,7 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
       });
+
       //delete review
       app.delete("/reviews/:id", async (req, res) => {
         const id = req.params.id;
@@ -90,6 +91,7 @@ async function run() {
         const result = await reviewCollection.deleteOne(query);
         res.send(result);
       });
+
       //get single item
       app.get("/reviews/:id", async (req, res) => {
         const id = req.params.id;
@@ -97,6 +99,7 @@ async function run() {
         const result = await reviewCollection.findOne(query);
         res.send(result);
       });
+
       //update review
       app.put("/reviews/:id", async (req, res) => {
         const id = req.params.id;
